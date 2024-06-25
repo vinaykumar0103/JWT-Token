@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotEnv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const ejc = require('ejs');
+const ejs = require('ejs');
 
 const app = express();
 
@@ -92,6 +92,59 @@ app.delete('/api/users/:userId', verifyUser , (req,res) => {
 
 })
 
+app.get("/vinay", (req,res) => {
+    res.render("vinay");
+})
+
+app.get("/vinnu", (req,res) => {
+    res.render("vinnu");
+})
+
+app.get('/api/login/:userId', (req,res) => {
+    const userId = req.params.userId
+    if(userId){
+        if(userId === '1'){
+            res.redirect('/vinay')
+        } else if(userId === "2"){
+            res.redirect("/vinnu")
+        }
+        else {
+            res.status(403).json('User not Found')
+        }
+    }
+
+})
+
+app.post("/api/logout", (req,res) => {
+    const userTokens = req.headers.authorization
+    if(userTokens) {
+        const token = userToken.split(' ')[1]
+        if(token){
+            let allTokens = []
+            const tokenIndex = allTokens.indexOf(token)
+            if(tokenIndex !== -1){
+                allTokens.splice(tokenIndex,1)
+                res.status(200).json('Logout Sucessfully')
+                res.redirect("/")  
+            }
+            else {
+               res.status(400).json('you are not valid use') 
+            }
+        } else {
+            res.status(400).json('token not found');
+        }
+    } else {
+        res.status(400).json('you are not authenticated');
+    }
+})
+
+app.get('/api/logout' , (req,res) => {
+    res.redirect('/');
+})
+
+app.get('/', (req,res) => {
+    res.render('home')
+})
 
 app.listen( PORT, () => {
     console.log( `Server started Running at ${PORT}` )
